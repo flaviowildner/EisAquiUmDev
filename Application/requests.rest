@@ -1,0 +1,51 @@
+### API Base URL
+@baseUrl = https://localhost:7126
+
+### Auth Endpoints
+@authBase = {{baseUrl}}/api/auth
+
+### Variáveis globais
+@token = 
+
+---
+
+### 1?? REGISTRAR NOVO USUÁRIO
+POST {{authBase}}/register
+Content-Type: application/json
+
+{
+  "email": "joao@example.com",
+  "password": "senha123456",
+  "name": "João Silva"
+}
+
+### 2?? LOGIN COM EMAIL/SENHA
+POST {{authBase}}/login
+Content-Type: application/json
+
+{
+  "email": "joao@example.com",
+  "password": "senha123456"
+}
+
+### 3?? LOGIN COM GOOGLE (coloque o idToken do Google)
+POST {{authBase}}/google-login
+Content-Type: application/json
+
+{
+  "idToken": "COLE_AQUI_O_ID_TOKEN_DO_GOOGLE"
+}
+
+### 4?? OBTER PERFIL (use o token do login)
+GET {{authBase}}/profile
+Authorization: Bearer {{token}}
+
+---
+
+### ?? PARA USAR OS REQUESTS:
+### 1. Copie o token da resposta do login
+### 2. Abra o settings.json (Ctrl+Shift+P > Rest Client: Settings)
+### 3. Copie o token para a variável @token acima
+### OU use no header diretamente:
+###
+### Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
