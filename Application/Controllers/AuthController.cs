@@ -25,11 +25,11 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Name))
-            return BadRequest("Email, senha e nome são obrigatórios");
+            return BadRequest("Email, senha e nome sï¿½o obrigatï¿½rios");
 
         var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
         if (existingUser != null)
-            return BadRequest("Usuário já existe");
+            return BadRequest("Usuï¿½rio jï¿½ existe");
 
         var user = new User
         {
@@ -53,11 +53,11 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
-            return BadRequest("Email e senha são obrigatórios");
+            return BadRequest("Email e senha sï¿½o obrigatï¿½rios");
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
         if (user == null || !_authService.VerifyPassword(request.Password, user.PasswordHash))
-            return Unauthorized("Email ou senha inválidos");
+            return Unauthorized("Email ou senha invï¿½lidos");
 
         var token = _authService.GenerateJwtToken(user);
         return Ok(new
@@ -71,34 +71,34 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
     {
         if (string.IsNullOrEmpty(request.IdToken))
-            return BadRequest("ID Token é obrigatório");
+            return BadRequest("ID Token ï¿½ obrigatï¿½rio");
 
         try
         {
             // Validar token do Google
             var googlePayload = await _authService.VerifyGoogleTokenAsync(request.IdToken);
             if (googlePayload == null)
-                return Unauthorized("Token do Google inválido");
+                return Unauthorized("Token do Google invï¿½lido");
 
-            // Procurar usuário existente
+            // Procurar usuï¿½rio existente
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.GoogleId == googlePayload.Subject || u.Email == googlePayload.Email);
 
             if (user == null)
             {
-                // Criar novo usuário
+                // Criar novo usuÃ¡rio
                 user = new User
                 {
                     GoogleId = googlePayload.Subject,
                     Email = googlePayload.Email,
                     Name = googlePayload.Name ?? googlePayload.Email.Split('@')[0],
-                    PasswordHash = "" // Usuário autenticado via Google não precisa de senha
+                    PasswordHash = "" // Usuï¿½rio autenticado via Google nï¿½o precisa de senha
                 };
                 _context.Users.Add(user);
             }
             else if (string.IsNullOrEmpty(user.GoogleId))
             {
-                // Vincular conta Google a usuário existente
+                // Vincular conta Google a usuï¿½rio existente
                 user.GoogleId = googlePayload.Subject;
             }
 
@@ -128,7 +128,7 @@ public class AuthController : ControllerBase
 
         var user = await _context.Users.FindAsync(userId);
         if (user == null)
-            return NotFound("Usuário não encontrado");
+            return NotFound("Usuï¿½rio nï¿½o encontrado");
 
         return Ok(new { user.Id, user.Email, user.Name, user.CreatedAt });
     }

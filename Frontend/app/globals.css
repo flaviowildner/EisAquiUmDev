@@ -1,0 +1,269 @@
+:root {
+  --bg: #f4efe6;
+  --panel: rgba(255, 251, 247, 0.88);
+  --panel-border: rgba(112, 79, 43, 0.12);
+  --text: #23190f;
+  --muted: #6c5a4b;
+  --accent: #cc5a2b;
+  --accent-deep: #8c3412;
+  --accent-soft: #f7dccd;
+  --success-bg: #ecf8f0;
+  --success-text: #256c43;
+  --error-bg: #fff1ef;
+  --error-text: #9d2f21;
+  --info-shadow: 0 32px 80px rgba(78, 42, 16, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(204, 90, 43, 0.18), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(95, 141, 78, 0.18), transparent 28%),
+    linear-gradient(135deg, #f8f2e9 0%, #efe2d0 45%, #f5eee7 100%);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.pageShell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 28px;
+  padding: 32px;
+}
+
+.heroPanel,
+.authCard {
+  border: 1px solid var(--panel-border);
+  border-radius: 28px;
+  background: var(--panel);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--info-shadow);
+}
+
+.heroPanel {
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 420px;
+}
+
+.eyebrow,
+.profileEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.76rem;
+  color: var(--accent-deep);
+}
+
+.heroPanel h1,
+.profilePanel h2,
+.formHeading h2 {
+  margin: 0;
+  line-height: 0.95;
+}
+
+.heroPanel h1 {
+  max-width: 8ch;
+  font-size: clamp(3.4rem, 9vw, 6.7rem);
+}
+
+.heroText,
+.formHeading p {
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 38rem;
+}
+
+.heroCard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.heroChip {
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(112, 79, 43, 0.1);
+  color: var(--accent-deep);
+  font-size: 0.95rem;
+}
+
+.authCard {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tabRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.tabButton {
+  border: 0;
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: #efe3d5;
+  color: var(--muted);
+  cursor: pointer;
+  transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+}
+
+.tabButton:hover {
+  transform: translateY(-1px);
+}
+
+.tabButton.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  color: #fff8f3;
+}
+
+.authForm,
+.profilePanel {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field span,
+.profileLabel {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.field input {
+  width: 100%;
+  border: 1px solid rgba(112, 79, 43, 0.16);
+  border-radius: 18px;
+  padding: 15px 16px;
+  background: rgba(255, 255, 255, 0.88);
+  outline: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.field input:focus {
+  border-color: rgba(204, 90, 43, 0.7);
+  box-shadow: 0 0 0 4px rgba(204, 90, 43, 0.14);
+  transform: translateY(-1px);
+}
+
+.primaryButton,
+.googleButton {
+  border: 0;
+  border-radius: 18px;
+  padding: 15px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+}
+
+.primaryButton:hover,
+.googleButton:hover {
+  transform: translateY(-1px);
+}
+
+.primaryButton:disabled,
+.googleButton:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  color: #fff8f3;
+  box-shadow: 0 18px 36px rgba(140, 52, 18, 0.24);
+}
+
+.googleButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fffdfa;
+  color: var(--text);
+  border: 1px solid rgba(112, 79, 43, 0.16);
+}
+
+.dangerButton {
+  background: linear-gradient(135deg, #b94839, #7b2018);
+  box-shadow: 0 18px 36px rgba(123, 32, 24, 0.2);
+}
+
+.googleIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.alert {
+  border-radius: 18px;
+  padding: 14px 16px;
+  font-size: 0.95rem;
+}
+
+.alert-success {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.alert-error {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.profileInfo {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(112, 79, 43, 0.1);
+}
+
+.profileInfo strong {
+  display: block;
+  margin-top: 4px;
+}
+
+@media (max-width: 960px) {
+  .pageShell {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .heroPanel {
+    min-height: auto;
+    padding: 30px;
+    gap: 28px;
+  }
+
+  .authCard {
+    padding: 14px;
+  }
+}

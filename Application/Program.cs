@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+ï»¿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -15,7 +15,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("AuthDb"));
 
-// Serviço de autenticação
+// Servico de autenticacao
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 // HttpClientFactory para validar tokens Google
@@ -23,7 +23,7 @@ builder.Services.AddHttpClient();
 
 // Configurar JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JwtSettings:SecretKey não configurado");
+var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JwtSettings:SecretKey nao configurado");
 var key = Encoding.UTF8.GetBytes(secretKey);
 
 builder.Services.AddAuthentication(options =>
@@ -47,7 +47,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// CORS para comunicação com frontend
+// CORS para comunicacao com frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost", policy =>
@@ -69,19 +69,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Servir arquivos estáticos (HTML, CSS, JS)
-app.UseStaticFiles();
-
 // Usar CORS
 app.UseCors("AllowLocalhost");
 
-// Usar autenticação e autorização
+// Usar autenticacao e autorizacao
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-// Mapear rota padrão para index.html (SPA)
-app.MapFallbackToFile("index.html");
 
 app.Run();
