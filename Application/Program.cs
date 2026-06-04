@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Text;
 using Application.Data;
 using Application.Services;
@@ -17,12 +18,44 @@ if (!string.IsNullOrWhiteSpace(railwayPort))
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection nao configurada");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+    if (!string.IsNullOrWhiteSpace(databaseUrl))
+    {
+        connectionString = ConvertDatabaseUrlToConnectionString(databaseUrl);
+    }
+}
+
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("ConnectionStrings:DefaultConnection ou DATABASE_URL nao configurada");
+}
 
 // DbContext com PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+static string ConvertDatabaseUrlToConnectionString(string databaseUrl)
+{
+    var uri = new Uri(databaseUrl);
+    var userInfo = uri.UserInfo.Split(':');
+
+    var builder = new NpgsqlConnectionStringBuilder
+    {
+        Host = uri.Host,
+        Port = uri.Port,
+        Username = userInfo[0],
+        Password = userInfo[1],
+        Database = uri.AbsolutePath.TrimStart('/'),
+        SslMode = SslMode.Require,
+        TrustServerCertificate = true
+    };
+
+    return builder.ToString();
+}
 
 // Servico de autenticacao
 builder.Services.AddScoped<IAuthService, AuthService>();
