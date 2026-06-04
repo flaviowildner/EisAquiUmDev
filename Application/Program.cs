@@ -6,6 +6,12 @@ using Application.Data;
 using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var railwayPort = Environment.GetEnvironmentVariable("PORT");
+
+if (!string.IsNullOrWhiteSpace(railwayPort))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{railwayPort}");
+}
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -52,7 +58,15 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+        var origins = new List<string> { "http://localhost:3000", "http://localhost:5000", "http://localhost:5173" };
+        var frontendUrl = builder.Configuration["Frontend:Url"];
+
+        if (!string.IsNullOrWhiteSpace(frontendUrl))
+        {
+            origins.Add(frontendUrl);
+        }
+
+        policy.WithOrigins(origins.Distinct().ToArray())
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
