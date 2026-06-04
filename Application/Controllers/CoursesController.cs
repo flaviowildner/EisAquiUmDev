@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using Application.Data;
 using Application.DTOs.Courses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -145,5 +147,45 @@ public class CoursesController : ControllerBase
         };
 
         return Ok(response);
+    }
+
+    [HttpPost("{courseId}/enroll")]
+    [Authorize]
+    public async Task<ActionResult> EnrollInCourse(int courseId)
+    {
+        var userId = GetUserId();
+
+        var course = await _context.Courses.FindAsync(courseId);
+        if (course == null || !course.IsPublished)
+        {
+            return NotFound("Curso não encontrado");
+        }
+
+        var existingEnrollment = await _context.Enrollments
+            .AnyAsync(x => x.CourseId == courseId && x.UserId == userId);
+
+        if (existingEnrollment)
+        {
+            return BadRequest("Usuário já está matriculado neste curso");
+        }
+
+        var enrollment = new Models.Enrollment
+        {
+            CourseId = courseId,
+            UserId = userId,
+            EnrolledAt = DateTime.UtcNow,
+            Status = Models.EnrollmentStatus.Active
+        };
+
+        _context.Enrollments.Add(enrollment);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { enrollment.Id, enrollment.CourseId, enrollment.UserId, enrollment.EnrolledAt });
+    }
+
+    private int GetUserId()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return int.TryParse(userIdClaim, out var userId) ? userId : 0;
     }
 }
