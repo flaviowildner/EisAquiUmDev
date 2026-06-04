@@ -18,16 +18,10 @@ if (!string.IsNullOrWhiteSpace(railwayPort))
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-if (string.IsNullOrWhiteSpace(connectionString))
-{
-    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-    if (!string.IsNullOrWhiteSpace(databaseUrl))
-    {
-        connectionString = ConvertDatabaseUrlToConnectionString(databaseUrl);
-    }
-}
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+var connectionString = !string.IsNullOrWhiteSpace(databaseUrl)
+    ? ConvertDatabaseUrlToConnectionString(databaseUrl)
+    : builder.Configuration.GetConnectionString("DefaultConnection");
 
 if (string.IsNullOrWhiteSpace(connectionString))
 {
