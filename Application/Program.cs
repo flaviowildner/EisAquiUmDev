@@ -17,9 +17,12 @@ if (!string.IsNullOrWhiteSpace(railwayPort))
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// DbContext com InMemory
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection nao configurada");
+
+// DbContext com PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseInMemoryDatabase("AuthDb"));
+    options.UseNpgsql(connectionString));
 
 // Servico de autenticacao
 builder.Services.AddScoped<IAuthService, AuthService>();
