@@ -86,14 +86,27 @@ builder.Services.AddAuthorization();
 // CORS para comunicacao com frontend
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        var origins = new List<string> { "http://localhost:3000", "http://localhost:5000", "http://localhost:5173" };
-        var frontendUrl = builder.Configuration["Frontend:Url"];
+        var origins = new List<string> 
+        { 
+            "http://localhost:3000", 
+            "http://localhost:5000", 
+            "http://localhost:5173" 
+        };
 
+        // Adiciona URL do frontend de configuração (appsettings)
+        var frontendUrl = builder.Configuration["Frontend:Url"];
         if (!string.IsNullOrWhiteSpace(frontendUrl))
         {
             origins.Add(frontendUrl);
+        }
+
+        // Adiciona URL do frontend de variável de ambiente (Railway)
+        var railwayFrontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
+        if (!string.IsNullOrWhiteSpace(railwayFrontendUrl))
+        {
+            origins.Add(railwayFrontendUrl);
         }
 
         policy.WithOrigins(origins.Distinct().ToArray())
@@ -114,7 +127,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Usar CORS
-app.UseCors("AllowLocalhost");
+app.UseCors("AllowFrontend");
 
 // Usar autenticacao e autorizacao
 app.UseAuthentication();
