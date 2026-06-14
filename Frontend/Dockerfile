@@ -11,7 +11,6 @@ FROM node:20-alpine AS runtime
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=3000
 
 COPY --from=build /app/package.json .
 COPY --from=build /app/.next/standalone .
